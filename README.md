@@ -1,6 +1,6 @@
 # 魯迅 · 第二大腦 (Lu Xun Second Brain)
 
-<div align="center">
+<div>
 
 ## 簡介
 
@@ -59,7 +59,7 @@
 );
 ---
 
-## 📦 專案結構
+## 專案結構
 
 ```
 luxun-second-brain/
@@ -92,7 +92,7 @@ luxun-second-brain/
 
 ---
 
-## 🔮 未來展望
+## 未來展望
 
 - [ ] 增加更多魯迅作品的原文閱讀功能
 - [ ] 加入語音對話功能
