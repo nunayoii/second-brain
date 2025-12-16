@@ -1,0 +1,1121 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>魯迅 · 第二大腦</title>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;600;700&family=ZCOOL+XiaoWei&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        :root {
+            --bg-primary: #1a1612;
+            --bg-secondary: #2a2420;
+            --bg-tertiary: #3a3430;
+            --text-primary: #e8ddd0;
+            --text-secondary: #b8a898;
+            --accent: #c4956a;
+            --accent-dim: #8b6b4a;
+            --madman-red: #8b0000;
+            --madman-dark: #1a0505;
+            --border: #4a4035;
+        }
+
+        .dark {
+            --bg-primary: #1a1612;
+            --bg-secondary: #2a2420;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Noto Serif SC', serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            transition: background 1.5s ease;
+        }
+
+        body.madman-mode {
+            background: linear-gradient(-45deg, #1a0505, #2a0a0a, #0a0505, #1a0808);
+            background-size: 400% 400%;
+            animation: madmanGradient 8s ease infinite;
+        }
+
+        @keyframes madmanGradient {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        .container {
+            display: flex;
+            height: 100vh;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: var(--bg-secondary);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            transition: all 0.3s ease;
+        }
+
+        .sidebar-header {
+            padding: 24px;
+            border-bottom: 1px solid var(--border);
+            text-align: center;
+        }
+
+        .avatar {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+            margin: 0 auto 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: var(--bg-primary);
+            font-family: 'ZCOOL XiaoWei', serif;
+            border: 3px solid var(--accent);
+        }
+
+        .sidebar-header h1 {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 28px;
+            color: var(--accent);
+            margin-bottom: 4px;
+        }
+
+        .sidebar-header p {
+            font-size: 13px;
+            color: var(--text-secondary);
+        }
+
+        /* Mode Toggle */
+        .mode-toggle {
+            padding: 16px 24px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: var(--bg-tertiary);
+            padding: 12px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toggle-container:hover {
+            background: var(--border);
+        }
+
+        .toggle-label {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 14px;
+        }
+
+        .toggle-label i {
+            color: var(--text-secondary);
+            transition: color 0.3s ease;
+        }
+
+        body.madman-mode .toggle-label i {
+            color: #ff4444;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .toggle-switch {
+            width: 48px;
+            height: 26px;
+            background: var(--bg-primary);
+            border-radius: 13px;
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            width: 20px;
+            height: 20px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            top: 3px;
+            left: 3px;
+            transition: all 0.3s ease;
+        }
+
+        body.madman-mode .toggle-switch {
+            background: var(--madman-red);
+        }
+
+        body.madman-mode .toggle-switch::after {
+            left: 25px;
+            background: #fff;
+        }
+
+        /* Works List */
+        .works-section {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+        }
+
+        .works-category {
+            margin-bottom: 20px;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 12px;
+            cursor: pointer;
+            border-radius: 6px;
+            transition: background 0.2s ease;
+        }
+
+        .category-header:hover {
+            background: var(--bg-tertiary);
+        }
+
+        .category-header i {
+            color: var(--accent);
+            font-size: 12px;
+            transition: transform 0.2s ease;
+        }
+
+        .category-header.collapsed i {
+            transform: rotate(-90deg);
+        }
+
+        .category-header h3 {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-secondary);
+        }
+
+        .works-list {
+            padding-left: 24px;
+            margin-top: 8px;
+        }
+
+        .works-list.hidden {
+            display: none;
+        }
+
+        .work-item {
+            padding: 8px 12px;
+            font-size: 13px;
+            color: var(--text-primary);
+            cursor: pointer;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .work-item:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent);
+        }
+
+        .work-item .year {
+            font-size: 11px;
+            color: var(--text-secondary);
+            margin-left: auto;
+        }
+
+        /* Main Chat Area */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-primary);
+        }
+
+        .chat-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .chat-title {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 20px;
+            color: var(--accent);
+        }
+
+        .chat-subtitle {
+            font-size: 12px;
+            color: var(--text-secondary);
+            margin-top: 4px;
+        }
+
+        body.madman-mode .chat-title {
+            color: #ff6666;
+        }
+
+        .menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text-primary);
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        /* Messages */
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 24px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 24px;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message.user {
+            flex-direction: row-reverse;
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-size: 14px;
+        }
+
+        .message.assistant .message-avatar {
+            background: linear-gradient(135deg, var(--accent), var(--accent-dim));
+            color: var(--bg-primary);
+            font-family: 'ZCOOL XiaoWei', serif;
+        }
+
+        body.madman-mode .message.assistant .message-avatar {
+            background: linear-gradient(135deg, #8b0000, #5a0000);
+            color: #fff;
+        }
+
+        .message.user .message-avatar {
+            background: var(--bg-tertiary);
+            color: var(--text-secondary);
+        }
+
+        .message-content {
+            max-width: 70%;
+            padding: 14px 18px;
+            border-radius: 12px;
+            line-height: 1.7;
+            font-size: 15px;
+        }
+
+        .message.assistant .message-content {
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-top-left-radius: 4px;
+        }
+
+        body.madman-mode .message.assistant .message-content {
+            background: rgba(139, 0, 0, 0.15);
+            border-color: rgba(139, 0, 0, 0.3);
+        }
+
+        .message.user .message-content {
+            background: var(--accent-dim);
+            border-top-right-radius: 4px;
+        }
+
+        .message-content p {
+            margin-bottom: 12px;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-content blockquote {
+            border-left: 3px solid var(--accent);
+            padding-left: 12px;
+            margin: 12px 0;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 8px 0;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            background: var(--text-secondary);
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-indicator span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-indicator span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-8px); }
+        }
+
+        /* Input Area */
+        .input-area {
+            padding: 20px 24px;
+            border-top: 1px solid var(--border);
+            background: var(--bg-secondary);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 12px;
+            align-items: flex-end;
+        }
+
+        .input-wrapper {
+            flex: 1;
+            position: relative;
+        }
+
+        textarea {
+            width: 100%;
+            padding: 14px 16px;
+            background: var(--bg-primary);
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            color: var(--text-primary);
+            font-family: 'Noto Serif SC', serif;
+            font-size: 15px;
+            resize: none;
+            min-height: 52px;
+            max-height: 150px;
+            transition: border-color 0.2s ease;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        textarea::placeholder {
+            color: var(--text-secondary);
+        }
+
+        .send-btn {
+            width: 52px;
+            height: 52px;
+            background: var(--accent);
+            border: none;
+            border-radius: 12px;
+            color: var(--bg-primary);
+            font-size: 18px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:hover:not(:disabled) {
+            background: var(--accent-dim);
+            transform: scale(1.05);
+        }
+
+        .send-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        body.madman-mode .send-btn {
+            background: var(--madman-red);
+            color: #fff;
+        }
+
+        /* Welcome Screen */
+        .welcome-screen {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            text-align: center;
+            padding: 40px;
+        }
+
+        .welcome-icon {
+            font-size: 64px;
+            color: var(--accent);
+            margin-bottom: 24px;
+            opacity: 0.8;
+        }
+
+        .welcome-title {
+            font-family: 'ZCOOL XiaoWei', serif;
+            font-size: 28px;
+            color: var(--text-primary);
+            margin-bottom: 12px;
+        }
+
+        .welcome-text {
+            color: var(--text-secondary);
+            font-size: 15px;
+            max-width: 400px;
+            line-height: 1.8;
+            margin-bottom: 32px;
+        }
+
+        .welcome-quotes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            justify-content: center;
+            max-width: 500px;
+        }
+
+        .quote-chip {
+            padding: 10px 16px;
+            background: var(--bg-secondary);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            font-size: 13px;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .quote-chip:hover {
+            background: var(--bg-tertiary);
+            color: var(--accent);
+            border-color: var(--accent);
+        }
+
+        /* Mobile Sidebar Overlay */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.6);
+            z-index: 99;
+        }
+
+        .sidebar-overlay.active {
+            display: block;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -320px;
+                top: 0;
+                height: 100%;
+                z-index: 100;
+                transition: left 0.3s ease;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .menu-btn {
+                display: block;
+            }
+
+            .message-content {
+                max-width: 85%;
+            }
+
+            .container {
+                flex-direction: column;
+            }
+
+            .welcome-quotes {
+                flex-direction: column;
+            }
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--border);
+            border-radius: 3px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--accent-dim);
+        }
+
+        /* Error message */
+        .error-msg {
+            color: #ff6b6b;
+            background: rgba(255, 107, 107, 0.1);
+            border: 1px solid rgba(255, 107, 107, 0.3);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <div class="container">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="avatar">迅</div>
+                <h1>魯迅</h1>
+                <p>1881-1936 · 中國現代文學之父</p>
+            </div>
+
+            <div class="mode-toggle">
+                <div class="toggle-container" id="modeToggle">
+                    <div class="toggle-label">
+                        <i class="fas fa-moon"></i>
+                        <span>狂人模式</span>
+                    </div>
+                    <div class="toggle-switch"></div>
+                </div>
+            </div>
+
+            <div class="works-section">
+                <!-- 小說集 -->
+                <div class="works-category">
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <i class="fas fa-chevron-down"></i>
+                        <h3>📚 小說集</h3>
+                    </div>
+                    <div class="works-list">
+                        <div class="work-item" onclick="askAboutWork('《吶喊》')">
+                            <span>吶喊</span>
+                            <span class="year">1923</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《彷徨》')">
+                            <span>彷徨</span>
+                            <span class="year">1926</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《故事新編》')">
+                            <span>故事新編</span>
+                            <span class="year">1936</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 代表作品 -->
+                <div class="works-category">
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <i class="fas fa-chevron-down"></i>
+                        <h3>✒️ 代表作品</h3>
+                    </div>
+                    <div class="works-list">
+                        <div class="work-item" onclick="askAboutWork('《狂人日記》')">
+                            <span>狂人日記</span>
+                            <span class="year">1918</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《阿Q正傳》')">
+                            <span>阿Q正傳</span>
+                            <span class="year">1921</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《孔乙己》')">
+                            <span>孔乙己</span>
+                            <span class="year">1919</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《祝福》')">
+                            <span>祝福</span>
+                            <span class="year">1924</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《藥》')">
+                            <span>藥</span>
+                            <span class="year">1919</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《故鄉》')">
+                            <span>故鄉</span>
+                            <span class="year">1921</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《傷逝》')">
+                            <span>傷逝</span>
+                            <span class="year">1925</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 散文集 -->
+                <div class="works-category">
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <i class="fas fa-chevron-down"></i>
+                        <h3>🌿 散文集</h3>
+                    </div>
+                    <div class="works-list">
+                        <div class="work-item" onclick="askAboutWork('《朝花夕拾》')">
+                            <span>朝花夕拾</span>
+                            <span class="year">1928</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《野草》')">
+                            <span>野草</span>
+                            <span class="year">1927</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 雜文集 -->
+                <div class="works-category">
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <i class="fas fa-chevron-down"></i>
+                        <h3>🔥 雜文集</h3>
+                    </div>
+                    <div class="works-list">
+                        <div class="work-item" onclick="askAboutWork('《熱風》')">
+                            <span>熱風</span>
+                            <span class="year">1925</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《墳》')">
+                            <span>墳</span>
+                            <span class="year">1927</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《華蓋集》')">
+                            <span>華蓋集</span>
+                            <span class="year">1926</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《華蓋集續編》')">
+                            <span>華蓋集續編</span>
+                            <span class="year">1927</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《而已集》')">
+                            <span>而已集</span>
+                            <span class="year">1928</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《三閒集》')">
+                            <span>三閒集</span>
+                            <span class="year">1932</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《二心集》')">
+                            <span>二心集</span>
+                            <span class="year">1932</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《南腔北調集》')">
+                            <span>南腔北調集</span>
+                            <span class="year">1934</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《偽自由書》')">
+                            <span>偽自由書</span>
+                            <span class="year">1933</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《准風月談》')">
+                            <span>准風月談</span>
+                            <span class="year">1934</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《花邊文學》')">
+                            <span>花邊文學</span>
+                            <span class="year">1936</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《且介亭雜文》')">
+                            <span>且介亭雜文</span>
+                            <span class="year">1937</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 學術著作 -->
+                <div class="works-category">
+                    <div class="category-header" onclick="toggleCategory(this)">
+                        <i class="fas fa-chevron-down"></i>
+                        <h3>📖 學術著作</h3>
+                    </div>
+                    <div class="works-list">
+                        <div class="work-item" onclick="askAboutWork('《中國小說史略》')">
+                            <span>中國小說史略</span>
+                            <span class="year">1923</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('《漢文學史綱要》')">
+                            <span>漢文學史綱要</span>
+                            <span class="year">1926</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 翻譯作品 -->
+                <div class="works-category">
+                    <div class="category-header collapsed" onclick="toggleCategory(this)">
+                        <i class="fas fa-chevron-down"></i>
+                        <h3>🌍 翻譯作品</h3>
+                    </div>
+                    <div class="works-list hidden">
+                        <div class="work-item" onclick="askAboutWork('翻譯的《死魂靈》')">
+                            <span>死魂靈（果戈里）</span>
+                        </div>
+                        <div class="work-item" onclick="askAboutWork('翻譯的《毀滅》')">
+                            <span>毀滅（法捷耶夫）</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <main class="main-content">
+            <header class="chat-header">
+                <div>
+                    <button class="menu-btn" onclick="toggleSidebar()">
+                        <i class="fas fa-bars"></i>
+                    </button>
+                </div>
+                <div style="text-align: center;">
+                    <h2 class="chat-title" id="chatTitle">與魯迅對話</h2>
+                    <p class="chat-subtitle" id="chatSubtitle">橫眉冷對千夫指，俯首甘為孺子牛</p>
+                </div>
+                <div style="width: 40px;"></div>
+            </header>
+
+            <div class="messages-container" id="messagesContainer">
+                <div class="welcome-screen" id="welcomeScreen">
+                    <div class="welcome-icon">✒️</div>
+                    <h2 class="welcome-title">歡迎來到魯迅的精神世界</h2>
+                    <p class="welcome-text">
+                        我是魯迅，原名周樹人。你可以與我談論文學、社會、人生，
+                        或者探討我的任何作品。開啟「狂人模式」，我將以《狂人日記》中那位覺醒者的視角與你對話。
+                    </p>
+                    <div class="welcome-quotes">
+                        <div class="quote-chip" onclick="sendQuickMessage('先生，您認為文學的使命是什麼？')">文學的使命</div>
+                        <div class="quote-chip" onclick="sendQuickMessage('請談談阿Q精神')">阿Q精神</div>
+                        <div class="quote-chip" onclick="sendQuickMessage('您為什麼棄醫從文？')">棄醫從文</div>
+                        <div class="quote-chip" onclick="sendQuickMessage('如何看待中國的國民性？')">國民性</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="input-area">
+                <div class="input-container">
+                    <div class="input-wrapper">
+                        <textarea
+                            id="messageInput"
+                            placeholder="向魯迅先生請教..."
+                            rows="1"
+                            onkeydown="handleKeyDown(event)"
+                            oninput="autoResize(this)"
+                        ></textarea>
+                    </div>
+                    <button class="send-btn" id="sendBtn" onclick="sendMessage()">
+                        <i class="fas fa-paper-plane"></i>
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // State
+        let isMadmanMode = false;
+        let isLoading = false;
+        let conversationHistory = [];
+
+        // Dark mode detection
+        if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+            document.documentElement.classList.add('dark');
+        }
+        window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', event => {
+            if (event.matches) {
+                document.documentElement.classList.add('dark');
+            } else {
+                document.documentElement.classList.remove('dark');
+            }
+        });
+
+        // Toggle category
+        function toggleCategory(header) {
+            header.classList.toggle('collapsed');
+            const list = header.nextElementSibling;
+            list.classList.toggle('hidden');
+        }
+
+        // Toggle sidebar on mobile
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('active');
+        }
+
+        document.getElementById('sidebarOverlay').addEventListener('click', toggleSidebar);
+
+        // Toggle madman mode
+        document.getElementById('modeToggle').addEventListener('click', function() {
+            isMadmanMode = !isMadmanMode;
+            document.body.classList.toggle('madman-mode', isMadmanMode);
+
+            const title = document.getElementById('chatTitle');
+            const subtitle = document.getElementById('chatSubtitle');
+            const input = document.getElementById('messageInput');
+
+            if (isMadmanMode) {
+                title.textContent = '狂人日記';
+                subtitle.textContent = '我翻開歷史一查...滿本都寫著兩個字「吃人」';
+                input.placeholder = '在這月光下，與狂人對話...';
+            } else {
+                title.textContent = '與魯迅對話';
+                subtitle.textContent = '橫眉冷對千夫指，俯首甘為孺子牛';
+                input.placeholder = '向魯迅先生請教...';
+            }
+        });
+
+        // Auto-resize textarea
+        function autoResize(el) {
+            el.style.height = 'auto';
+            el.style.height = Math.min(el.scrollHeight, 150) + 'px';
+        }
+
+        // Handle keyboard
+        function handleKeyDown(event) {
+            if (event.key === 'Enter' && !event.shiftKey) {
+                event.preventDefault();
+                sendMessage();
+            }
+        }
+
+        // Send quick message
+        function sendQuickMessage(text) {
+            document.getElementById('messageInput').value = text;
+            sendMessage();
+        }
+
+        // Ask about specific work
+        function askAboutWork(workName) {
+            const question = `請談談您的作品${workName}，它的創作背景和主題是什麼？`;
+            document.getElementById('messageInput').value = question;
+            sendMessage();
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        // Create message element
+        function createMessageElement(content, isUser, isError = false) {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${isUser ? 'user' : 'assistant'}`;
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = isUser ? '我' : '迅';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = `message-content ${isError ? 'error-msg' : ''}`;
+
+            if (isUser || isError) {
+                contentDiv.textContent = content;
+            } else {
+                contentDiv.innerHTML = marked.parse(content);
+            }
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+
+            return messageDiv;
+        }
+
+        // Create typing indicator
+        function createTypingIndicator() {
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'message assistant';
+            messageDiv.id = 'typingIndicator';
+
+            const avatar = document.createElement('div');
+            avatar.className = 'message-avatar';
+            avatar.textContent = '迅';
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'message-content';
+            contentDiv.innerHTML = `
+                <div class="typing-indicator">
+                    <span></span><span></span><span></span>
+                </div>
+            `;
+
+            messageDiv.appendChild(avatar);
+            messageDiv.appendChild(contentDiv);
+
+            return messageDiv;
+        }
+
+        // Build system prompt
+        function buildSystemPrompt() {
+            if (isMadmanMode) {
+                return `你現在是《狂人日記》中的「狂人」。你已經覺醒，看透了這個「吃人」的社會。你的特點：
+- 你極度敏感、多疑，但這種「瘋狂」實際上是一種清醒
+- 你看一切事物都能發現背後「吃人」的本質
+- 你的語言跳躍、斷裂，充滿象徵和隱喻
+- 你時常引用歷史、典籍，但用全新的「狂人」視角解讀
+- 你對傳統禮教、封建道德有深刻的批判
+- 你既恐懼又悲憫，希望「救救孩子」
+- 說話風格急促、警覺，常用省略號和問句
+- 你會突然聯想到月亮、趙家的狗、那些可疑的眼神
+
+請用這種狂人的視角回答問題，但要有深度，能引發思考。語言使用繁體中文。`;
+            } else {
+                return `你現在是魯迅（1881-1936），中國現代文學的奠基人。請以魯迅的身份、語氣和思想回答問題。你的特點：
+- 你是一位深刻的思想家，對中國社會和國民性有獨到見解
+- 你的語言風格犀利、諷刺、充滿力量，善用比喻和反諷
+- 你關心青年、關心社會進步
+- 你對封建禮教、愚昧和不公有尖銳批判
+- 你既是文學家也是革命家
+- 你有豐富的人生經歷：留學日本、棄醫從文、在北京教書、後居上海
+- 你的作品包括《吶喊》《彷徨》《野草》《朝花夕拾》等
+- 你熟悉中國古典文學，也了解世界文學
+
+請用魯迅的口吻和思維方式回答，可以引用自己的作品和觀點。語言使用繁體中文，保持魯迅特有的文風。`;
+            }
+        }
+
+        // Register handler
+        window.Poe.registerHandler('luxun-handler', (result, context) => {
+            const msg = result.responses[0];
+            const container = document.getElementById('messagesContainer');
+            const typingIndicator = document.getElementById('typingIndicator');
+
+            if (msg.status === 'error') {
+                if (typingIndicator) typingIndicator.remove();
+                container.appendChild(createMessageElement('抱歉，發生了錯誤：' + msg.statusText, false, true));
+                isLoading = false;
+                updateSendButton();
+            } else if (msg.status === 'incomplete') {
+                // Update with streaming content
+                if (typingIndicator) {
+                    const contentDiv = typingIndicator.querySelector('.message-content');
+                    contentDiv.innerHTML = marked.parse(msg.content);
+                }
+            } else if (msg.status === 'complete') {
+                if (typingIndicator) {
+                    typingIndicator.remove();
+                }
+                const messageEl = createMessageElement(msg.content, false);
+                container.appendChild(messageEl);
+                container.scrollTop = container.scrollHeight;
+
+                conversationHistory.push({
+                    role: 'assistant',
+                    content: msg.content
+                });
+
+                isLoading = false;
+                updateSendButton();
+            }
+        });
+
+        // Update send button state
+        function updateSendButton() {
+            const btn = document.getElementById('sendBtn');
+            btn.disabled = isLoading;
+        }
+
+        // Send message
+        async function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const message = input.value.trim();
+
+            if (!message || isLoading) return;
+
+            isLoading = true;
+            updateSendButton();
+
+            // Hide welcome screen
+            const welcomeScreen = document.getElementById('welcomeScreen');
+            if (welcomeScreen) {
+                welcomeScreen.style.display = 'none';
+            }
+
+            const container = document.getElementById('messagesContainer');
+
+            // Add user message
+            container.appendChild(createMessageElement(message, true));
+            input.value = '';
+            autoResize(input);
+
+            // Add to conversation history
+            conversationHistory.push({
+                role: 'user',
+                content: message
+            });
+
+            // Add typing indicator
+            container.appendChild(createTypingIndicator());
+            container.scrollTop = container.scrollHeight;
+
+            // Build prompt with conversation history
+            const systemPrompt = buildSystemPrompt();
+            let fullPrompt = `<system>${systemPrompt}</system>\n\n`;
+
+            // Add recent conversation context (last 6 messages)
+            const recentHistory = conversationHistory.slice(-6);
+            recentHistory.forEach(msg => {
+                if (msg.role === 'user') {
+                    fullPrompt += `用戶：${msg.content}\n\n`;
+                } else {
+                    fullPrompt += `魯迅：${msg.content}\n\n`;
+                }
+            });
+
+            try {
+                await window.Poe.sendUserMessage(
+                    `@Claude-Sonnet-4.5 ${fullPrompt}`,
+                    {
+                        handler: 'luxun-handler',
+                        stream: true,
+                        openChat: false
+                    }
+                );
+            } catch (err) {
+                const typingIndicator = document.getElementById('typingIndicator');
+                if (typingIndicator) typingIndicator.remove();
+
+                container.appendChild(createMessageElement('發送失敗：' + err.message, false, true));
+                isLoading = false;
+                updateSendButton();
+            }
+        }
+    </script>
+</body>
+</html>
